@@ -5,9 +5,9 @@
 
 <div id="zh" class="language-content">
 
-# DeepSeek CLI
+# DeepSeek Command-line Tool
 
-DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮对话，并支持对话历史记录的管理。~~是对jyy老师的拙劣模仿。~~
+DeepSeek Command-line Tool 是一个命令行工具，通过调用 DeepSeek API 实现多轮对话，并支持对话历史记录的管理。~~是对jyy老师的拙劣模仿。~~
 
 你可以在有记忆模式下新建/继续对话，也可以使用无记忆模式单次对话。
 
@@ -159,7 +159,7 @@ ag -m "请继续刚才的话题。"
 
 # DeepSeek CLI  
 
-DeepSeek CLI is a command-line tool that enables multi-turn conversations by calling the DeepSeek API and supports managing conversation history. ~~A clumsy imitation of Prof. Jyy's work.~~  
+DeepSeek Command-line Tool is a command-line tool that enables multi-turn conversations by calling the DeepSeek API and supports managing conversation history. ~~A clumsy imitation of Prof. Jyy's work.~~  
 
 You can initiate or continue conversations in memory mode or use memoryless mode for single-turn interactions.  
 
