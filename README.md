@@ -117,6 +117,29 @@ api_key = "your_api_key_here"
 
 程序会自动管理对话历史记录，并在记忆模式下显示相应的提示信息（绿色表示成功保存，黄色表示不保存历史记录）。
 
+### 更多参数
+
+```sh
+使用 DeepSeek API 进行多轮对话，并管理对话历史
+
+Usage: ag [OPTIONS] [query] [COMMAND]
+
+Commands:
+  new       新对话
+  continue  继续上一次对话
+  help      Print this message or the help of the given subcommand(s)
+
+Arguments:
+  [query]  查询内容
+
+Options:
+  -v, --version <version>          模型版本, r1 表示 deepseek-reasoner [default: v3]
+  -t, --temperature <temperature>  温度（默认：1） [default: 1]
+  -m, --memory                     记忆模式：启用后每次调用 API 时保存历史记录
+  -h, --help                       Print help
+  -V, --version                    Print version
+```
+
 ## 示例
 
 ```sh
@@ -262,6 +285,29 @@ Enable with `-m` or `--memory`.
   ```  
 
 The program auto-manages history, with colored prompts indicating success (green) or disabled history (yellow).  
+
+### More Arguments
+
+```sh
+Using the DeepSeek API for multi-turn conversations and managing conversation history  
+
+Usage: ag [OPTIONS] [query] [COMMAND]  
+
+Commands:  
+  new       Start a new conversation  
+  continue  Continue the previous conversation  
+  help      Print this message or the help of the given subcommand(s)  
+
+Arguments:  
+  [query]  Query content  
+
+Options:  
+  -v, --version <version>          Model version, r1 represents deepseek-reasoner [default: v3]  
+  -t, --temperature <temperature>  Temperature (default: 1) [default: 1]  
+  -m, --memory                     Memory mode: Saves history when enabled for each API call  
+  -h, --help                       Print help  
+  -V, --version                    Print version
+```
 
 ## Examples  
 
