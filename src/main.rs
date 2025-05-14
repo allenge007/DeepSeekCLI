@@ -217,6 +217,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 解析主要参数
     let cli = parse_args();
     let currnt_history_path = &current_history_path();
+
+        // 读取管道传输的内容（如果有）
+    let mut piped_input = String::new();
+    if !atty::is(Stream::Stdin) {
+        // 从标准输入读取管道内容
+        use std::io::Read;
+        io::stdin().read_to_string(&mut piped_input)?;
+    }
+    // 拼接管道内容与命令行查询内容
+    let final_query = if piped_input.trim().is_empty() {
+        cli.query.clone()
+    } else {
+        format!("{}\n{}", piped_input.trim(), cli.query)
+    };
+
     // 根据记忆模式判断历史加载与保存
     let mut history_messages = if cli.no_memory {
         Vec::new()
@@ -230,7 +245,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 将用户提问加入对话历史
     history_messages.push(ChatMessage {
         role: "user".to_string(),
-        content: cli.query.clone(),
+        content: final_query,
         reasoning_content: None,
         tool_calls: None,
     });

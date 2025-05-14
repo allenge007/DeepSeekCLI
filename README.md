@@ -1,3 +1,10 @@
+<div class="language-tabs">
+  <button class="tab-button active" onclick="showLanguage('zh', event)">中文</button>
+  <button class="tab-button" onclick="showLanguage('en', event)">English</button>
+</div>
+
+<div id="zh" class="language-content">
+
 # DeepSeek CLI
 
 DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮对话，并支持对话历史记录的管理。~~是对jyy老师的拙劣模仿。~~
@@ -145,3 +152,190 @@ ag -m "请继续刚才的话题。"
 ## 联系方式
 
 如有疑问或建议，请联系项目负责人或通过 issue 反馈。
+
+</div>
+
+<div id="en" class="language-content" style="display:none;">
+
+# DeepSeek CLI  
+
+DeepSeek CLI is a command-line tool that enables multi-turn conversations by calling the DeepSeek API and supports managing conversation history. ~~A clumsy imitation of Prof. Jyy's work.~~  
+
+You can initiate or continue conversations in memory mode or use memoryless mode for single-turn interactions.  
+
+## Features  
+
+- **Memoryless Mode**: Directly input queries—the program only sends the current input to the API without loading or saving history.  
+- **Memory Mode**: Enabled via the `--memory` (`-m`) flag, supporting the following subcommands:  
+  - `new`: Start a new conversation, clearing history.  
+  - `continue`: Resume the previous conversation, automatically loading saved history.  
+- ANSI-colored prompts for quick identification of success/error messages.  
+- Conversation history is saved in timestamp-based files for easy management.  
+- Supports data transmission via pipes.  
+
+## Installation  
+
+1. Clone the repository:  
+
+   ```sh  
+   git clone <repository_url>  
+   cd deepseek_cli  
+   ```  
+
+2. Ensure [Rust](https://www.rust-lang.org/tools/install) is installed.  
+
+3. Build the project:  
+
+   ```sh  
+   cargo build --release  
+   ```  
+
+4. The executable will be generated at `target/release/deepseek_cli`.  
+
+## Configuration  
+
+Create a `config.toml` file under `~/.config/deepseek/` and include your DeepSeek API key:  
+
+```toml  
+api_key = "your_api_key_here"  
+```  
+
+Below are steps for macOS, Linux, and Windows to add the executable to your PATH for global access:  
+
+<details>  
+  <summary><strong>macOS</strong></summary>  
+
+  Run the following command (admin privileges required) to symlink the executable to `/usr/local/bin` (usually in PATH):  
+
+  ```bash  
+  sudo ln -s $(pwd)/target/release/deepseek_cli /usr/local/bin/ag  
+  ```  
+</details>  
+
+<details>  
+  <summary><strong>Linux</strong></summary>  
+
+  Symlink:  
+
+  ```bash  
+  sudo ln -s $(pwd)/target/release/deepseek_cli /usr/local/bin/ag  
+  ```  
+
+  Or copy the file:  
+
+  ```bash  
+  sudo cp $(pwd)/target/release/deepseek_cli /usr/local/bin/ag  
+  ```  
+</details>  
+
+<details>  
+  <summary><strong>Windows</strong></summary>  
+
+  Run in an elevated Command Prompt or PowerShell:  
+
+  ```cmd  
+  copy target\release\deepseek_cli.exe C:\Windows\System32\ag.exe  
+  ```  
+</details>  
+
+Ensure you have sufficient permissions for the target directory. After setup, use the `ag` command globally.  
+
+## Usage  
+
+### Memoryless Mode  
+
+Directly input your query:  
+
+```sh  
+./deepseek_cli "This is a memoryless query"  
+```  
+
+### Memory Mode  
+
+Enable with `-m` or `--memory`.  
+
+- **New Conversation** (clears history):  
+
+  ```sh  
+  ./deepseek_cli -m new "Is this our first conversation?"  
+  ```  
+
+- **Continue Conversation**:  
+
+  Use the `continue` subcommand or omit it after `-m`:  
+
+  ```sh  
+  ./deepseek_cli -m continue "Let’s resume our talk."  
+  # Or  
+  ./deepseek_cli -m "Let’s resume our talk."  
+  ```  
+
+The program auto-manages history, with colored prompts indicating success (green) or disabled history (yellow).  
+
+## Examples  
+
+```sh  
+# Memoryless mode:  
+ag "Hello, DeepSeek!"  
+
+# New memory-mode conversation:  
+ag -m new "Is this our first chat?"  
+
+# Continue in memory mode:  
+ag -m "Continue the previous topic."  
+```  
+
+## Development  
+
+Built with:  
+- [Tokio](https://docs.rs/tokio) for async tasks.  
+- [Clap](https://docs.rs/clap) for CLI parsing.  
+- [Reqwest](https://docs.rs/reqwest) for API calls.  
+
+Key files:  
+- `src/main.rs` – Core logic & argument parsing.  
+- `src/history.rs` – History management.  
+- `src/config.rs` – Configuration handling.  
+- `src/models.rs` – Request/response structures.  
+
+## License  
+
+MIT License. See [LICENSE](LICENSE).  
+
+## Contact  
+
+For questions or feedback, open an issue or contact the maintainer.
+
+</div>
+
+<script>
+function showLanguage(lang, event) {
+  document.getElementById('zh').style.display = (lang === 'zh' ? 'block' : 'none');
+  document.getElementById('en').style.display = (lang === 'en' ? 'block' : 'none');
+  
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.classList.remove('active');
+  });
+  event.target.classList.add('active');
+}
+</script>
+
+<style>
+.language-tabs {
+  margin-bottom: 1em;
+}
+.tab-button {
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+  margin-right: 0.5em;
+}
+.tab-button.active {
+  background-color: #ddd;
+  font-weight: bold;
+}
+.language-content {
+  /* 可根据需要调整 */
+}
+</style>
