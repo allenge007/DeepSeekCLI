@@ -92,7 +92,7 @@ api_key = "your_api_key_here"
 直接调用命令并输入对话内容：
 
 ```sh
-./deepseek_cli "这是一条无记忆对话"
+ag "这是一条无记忆对话"
 ```
 
 ### 记忆模式
@@ -102,7 +102,7 @@ api_key = "your_api_key_here"
 - **新对话**（清空历史记录）:
 
   ```sh
-  ./deepseek_cli -m new "这是我们的第一次对话吗"
+  ag -m new "这是我们的第一次对话吗"
   ```
 
 - **继续对话**:
@@ -110,9 +110,9 @@ api_key = "your_api_key_here"
   指定 `continue` 子命令或直接使用 `-m` 参数后输入对话内容：
 
   ```sh
-  ./deepseek_cli -m continue "继续我们的对话"
+  ag -m continue "继续我们的对话"
   # 或者
-  ./deepseek_cli -m "继续我们的对话"
+  ag -m "继续我们的对话"
   ```
 
 程序会自动管理对话历史记录，并在记忆模式下显示相应的提示信息（绿色表示成功保存，黄色表示不保存历史记录）。
@@ -261,7 +261,7 @@ Ensure you have sufficient permissions for the target directory. After setup, us
 Directly input your query:  
 
 ```sh  
-./deepseek_cli "This is a memoryless query"  
+ag "This is a memoryless query"  
 ```  
 
 ### Memory Mode  
@@ -271,7 +271,7 @@ Enable with `-m` or `--memory`.
 - **New Conversation** (clears history):  
 
   ```sh  
-  ./deepseek_cli -m new "Is this our first conversation?"  
+  ag -m new "Is this our first conversation?"  
   ```  
 
 - **Continue Conversation**:  
@@ -279,9 +279,9 @@ Enable with `-m` or `--memory`.
   Use the `continue` subcommand or omit it after `-m`:  
 
   ```sh  
-  ./deepseek_cli -m continue "Let’s resume our talk."  
+  ag -m continue "Let’s resume our talk."  
   # Or  
-  ./deepseek_cli -m "Let’s resume our talk."  
+  ag -m "Let’s resume our talk."  
   ```  
 
 The program auto-manages history, with colored prompts indicating success (green) or disabled history (yellow).  
