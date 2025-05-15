@@ -186,21 +186,19 @@ async fn process_stream(
                                     print!("{}", c);
                                     content.push(c);
                                     io::stdout().flush().unwrap();
-                                    sleep(Duration::from_millis(10)).await;
                                 }
-                                println!("\n");
                             }
                             // 输出最终回答
                             if let Some(delta_content) = &delta.content {
                                 if model == "deepseek-reasoner" && thinking {
                                     thinking = false;
+                                    println!();
                                     println!("\nanswer:\n");
                                 }
                                 for c in delta_content.chars() {
                                     print!("{}", c);
                                     content.push(c);
                                     io::stdout().flush().unwrap();
-                                    sleep(Duration::from_millis(10)).await;
                                 }
                             }
                         }
