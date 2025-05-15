@@ -162,7 +162,7 @@ ag "Hello, DeepSeek!"
 ag new "Hello, is this our first conversation?"  
 
 # Continue a conversation in memory mode:  
-ag "Please continue the previous topic."  
+ag continue "Please continue the previous topic."  
 ```  
 
 ## Development  
