@@ -38,12 +38,6 @@ DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮�
 
 ## 配置
 
-在 `~/.config/deepseek/` 下创建配置文件 `config.toml`，确保包含你的 DeepSeek API key，例如：
-
-```toml
-api_key = "your_api_key_here"
-```
-
 下面是针对 macOS、Linux 和 Windows 系统的示例步骤，帮助你将生成的可执行文件放入 PATH 中，从而实现全局调用：
 
 <details>
@@ -84,7 +78,19 @@ api_key = "your_api_key_here"
 
 请确保你有足够的权限在对应目录中创建符号链接或复制文件，完成上述操作后，就可以在终端中直接使用 `ag` 命令全局调用该程序。
 
+在 `~/.config/deepseek/` 下创建配置文件 `config.toml`，确保包含你的 DeepSeek API key，例如：
 
+```toml
+api_key = "your_api_key_here"
+```
+
+或者直接使用命令
+
+```sh
+ag set_api your_api_key
+```
+
+完成配置文件的生成，默认生成路径为 `~/.config/deepseek/config.toml`。
 
 ## 使用方法
 
@@ -128,6 +134,7 @@ Usage: ag [OPTIONS] [query] [COMMAND]
 Commands:
   new       新对话
   continue  继续上一次对话
+  set_api   设置 API Key
   help      Print this message or the help of the given subcommand(s)
 
 Arguments:
@@ -210,12 +217,6 @@ You can initiate or continue conversations in memory mode or use memoryless mode
 
 ## Configuration  
 
-Create a `config.toml` file under `~/.config/deepseek/` and include your DeepSeek API key:  
-
-```toml  
-api_key = "your_api_key_here"  
-```  
-
 Below are steps for macOS, Linux, and Windows to add the executable to your PATH for global access:  
 
 <details>  
@@ -255,6 +256,20 @@ Below are steps for macOS, Linux, and Windows to add the executable to your PATH
 </details>  
 
 Ensure you have sufficient permissions for the target directory. After setup, use the `ag` command globally.  
+
+Create a configuration file `config.toml` in `~/.config/deepseek/` and ensure it includes your DeepSeek API key, for example:  
+
+```toml
+api_key = "your_api_key_here"
+```  
+
+Alternatively, you can directly use the command:  
+
+```sh
+ag set_api your_api_key
+```  
+
+This will generate the configuration file, with the default path being `~/.config/deepseek/config.toml`.
 
 ## Usage  
 
@@ -298,6 +313,7 @@ Usage: ag [OPTIONS] [query] [COMMAND]
 Commands:  
   new       Start a new conversation  
   continue  Continue the previous conversation  
+  set_api   Set API Key  
   help      Print this message or the help of the given subcommand(s)  
 
 Arguments:  
@@ -306,9 +322,9 @@ Arguments:
 Options:  
   -v, --version <version>          Model version, r1 represents deepseek-reasoner [default: v3]  
   -t, --temperature <temperature>  Temperature (default: 1.0, range: 0.0-2.0, higher values increase randomness) [default: 1.0]  
-  -m, --memory                     Memory mode: When enabled, saves conversation history with each API call  
-  -h, --help                       Print help  
-  -V, --version                    Print version
+  -m, --memory                    Memory mode: When enabled, saves conversation history with each API call  
+  -h, --help                      Print help  
+  -V, --version                   Print version
 ```
 
 ## Examples  

@@ -11,7 +11,7 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use tokio::time::{sleep, Duration};
 
-use config::{read_config, Config};
+use config::{read_config, set_config, Config};
 use history::*;
 use models::{ChatMessage, ChatPayload, ResponseFormat, StreamingChunk};
 
@@ -24,6 +24,7 @@ enum MemoryAction {
 }
 
 struct CliArgs {
+    set_api: Option<String>,
     mem_action: Option<MemoryAction>,
     query: String,
     model: String,
@@ -69,8 +70,33 @@ fn parse_args() -> CliArgs {
                 .about("继续上一次对话")
                 .arg(Arg::new("query").help("查询内容").index(1)),
         )
+        .subcommand(
+            Command::new("set_api")
+            .about("设置 API Key")
+            .arg(Arg::new("api_key").help("要设置的 API Key").index(1))
+        )
         .get_matches();
 
+    if let Some(sub_m) = matches.subcommand_matches("set_api") {
+        let api_key = if let Some(key) = sub_m.get_one::<String>("api_key") {
+            key.to_string()
+        } else {
+            print!("请输入 API Key：");
+            io::stdout().flush().unwrap();
+            let mut key = String::new();
+            io::stdin().read_line(&mut key).expect("读取输入失败");
+            key.trim().to_string()
+        };
+
+        return CliArgs {
+            set_api: Some(api_key),
+            mem_action: None,
+            query: "".to_string(),
+            model: "".to_string(),
+            temperature: 0.0,
+            no_memory: false,
+        };
+    }
     // 如果在记忆模式下且存在子命令，则优先从子命令中获取查询内容
     let query = if let Some(sub_m) = matches.subcommand_matches("new") {
         sub_m.get_one::<String>("query").unwrap_or_else(|| {
@@ -115,6 +141,7 @@ fn parse_args() -> CliArgs {
     };
 
     CliArgs {
+        set_api: None,
         mem_action,
         query,
         model,
@@ -214,6 +241,11 @@ async fn process_stream(
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 解析主要参数
     let cli = parse_args();
+    if let Some(api_key) = cli.set_api {
+        return set_config(&api_key)
+            .map_err(|e| format!("设置 API Key 失败: {}", e).into());
+    }
+
     let currnt_history_path = &current_history_path();
 
         // 读取管道传输的内容（如果有）
@@ -267,7 +299,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     let cfg: Config = read_config()
-        .expect("请检查配置文件 ~/.config/deepseek/config.toml 格式");
+        .expect("请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key");
     let api_key = cfg.api_key;
     let baseurl = "https://api.deepseek.com/chat/completions";
     let client = Client::new();
