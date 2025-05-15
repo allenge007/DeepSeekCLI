@@ -10,8 +10,9 @@ DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮�
 
 - **无记忆模式**：直接输入对话，程序仅使用当前输入向 API 提问，不加载或保存历史记录。
 - **记忆模式**：使用 `--memory` 参数启用，支持以下子命令：
-  - `new`：新对话，清空历史记录并启动一个新的会话。
-  - `continue`：继续上一次对话，自动加载保存的历史内容。
+  - `new`：启动一个新的会话。
+  - `continue`：继续上一次（最近一次的记忆模式）对话。
+  - 你可以在 `~/.config/deepseek/histories/` 中找到你的对话历史记录（仅限记忆模式下）。
 - ANSI 色彩提示，帮助你快速识别成功/错误信息。
 - 对话历史记录以基于时间戳的文件保存，管理历史记录更加方便。
 - 支持通过管道进行数据传输。
@@ -179,10 +180,11 @@ You can initiate or continue conversations in memory mode or use memoryless mode
 
 ## Features  
 
-- **Memoryless Mode**: Directly input queries—the program only sends the current input to the API without loading or saving history.  
-- **Memory Mode**: Enabled via the `--memory` (`-m`) flag, supporting the following subcommands:  
-  - `new`: Start a new conversation, clearing history.  
-  - `continue`: Resume the previous conversation, automatically loading saved history.  
+- **Memoryless Mode**: Directly input the conversation, and the program will only use the current input to query the API, without loading or saving any historical records.  
+- **Memory Mode**: Enable with the `--memory` parameter, supporting the following subcommands:  
+  - `new`: Start a new session.  
+  - `continue`: Resume the last (most recent memory mode) conversation.  
+  - You can find your conversation history (only in memory mode) at `~/.config/deepseek/histories/`.
 - ANSI-colored prompts for quick identification of success/error messages.  
 - Conversation history is saved in timestamp-based files for easy management.  
 - Supports data transmission via pipes.  
