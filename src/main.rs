@@ -3,7 +3,7 @@ mod history;
 mod models;
 
 use atty::Stream;
-use clap::{Arg, Command, ArgAction, Subcommand};
+use clap::{Arg, Command, Subcommand};
 use futures::StreamExt;
 use reqwest::Client;
 use std::io::{self, Write};
@@ -21,6 +21,8 @@ enum MemoryAction {
     New,
     /// 继续上一次对话
     Continue,
+    // 无记忆模式
+    NoMemory,
 }
 
 struct CliArgs {
@@ -51,14 +53,6 @@ fn parse_args() -> CliArgs {
                 .default_value("1.0")
                 .help("温度（默认：1.0，范围：0.0-2.0，越高越随机）"),
         )
-        // 使用 --memory 表示记忆模式，否则为无记忆模式
-        .arg(
-            Arg::new("memory")
-                .long("memory")
-                .short('m')
-                .help("记忆模式：启用后每次调用 API 时保存历史记录")
-                .action(ArgAction::SetTrue),
-        )
         // 当开启记忆模式时，仅允许 new 或 continue 子命令
         .subcommand(
             Command::new("new")
@@ -68,6 +62,11 @@ fn parse_args() -> CliArgs {
         .subcommand(
             Command::new("continue")
                 .about("继续上一次对话")
+                .arg(Arg::new("query").help("查询内容").index(1)),
+        )
+        .subcommand(
+            Command::new("nomemory")
+                .about("无记忆模式")
                 .arg(Arg::new("query").help("查询内容").index(1)),
         )
         .subcommand(
@@ -97,13 +96,29 @@ fn parse_args() -> CliArgs {
             no_memory: false,
         };
     }
-    // 如果在记忆模式下且存在子命令，则优先从子命令中获取查询内容
+    
+    let mem_action = if let Some(_) = matches.subcommand_matches("new") {
+        Some(MemoryAction::New)
+    } else if let Some(_) = matches.subcommand_matches("continue") {
+        Some(MemoryAction::Continue)
+    } else if let Some(_) = matches.subcommand_matches("nomemory") {
+        Some(MemoryAction::NoMemory)
+    } else {
+        Some(MemoryAction::NoMemory)
+    };
+
+    // 获取查询内容：如果子命令中存在 query，则优先使用；否则使用全局参数
     let query = if let Some(sub_m) = matches.subcommand_matches("new") {
         sub_m.get_one::<String>("query").unwrap_or_else(|| {
             eprintln!("请提供查询内容");
             std::process::exit(1);
         }).to_string()
     } else if let Some(sub_m) = matches.subcommand_matches("continue") {
+        sub_m.get_one::<String>("query").unwrap_or_else(|| {
+            eprintln!("请提供查询内容");
+            std::process::exit(1);
+        }).to_string()
+    } else if let Some(sub_m) = matches.subcommand_matches("nomemory") {
         sub_m.get_one::<String>("query").unwrap_or_else(|| {
             eprintln!("请提供查询内容");
             std::process::exit(1);
@@ -127,17 +142,9 @@ fn parse_args() -> CliArgs {
         .and_then(|t| t.parse::<f32>().ok())
         .unwrap_or(1.0);
 
-    let memory = matches.get_flag("memory");
-    // 当记忆模式开启时，允许 new 或 continue 作为子命令；否则均为无记忆模式
-    let mem_action = if memory {
-        if let Some(_) = matches.subcommand_matches("new") {
-            Some(MemoryAction::New)
-        } else {
-            // 未指定默认为 continue
-            Some(MemoryAction::Continue)
-        }
-    } else {
-        None
+    let no_memory = match mem_action {
+        Some(MemoryAction::NoMemory) => true,
+        _ => false,
     };
 
     CliArgs {
@@ -146,7 +153,7 @@ fn parse_args() -> CliArgs {
         query,
         model,
         temperature,
-        no_memory: !memory,
+        no_memory: no_memory,
     }
 }
 
@@ -339,7 +346,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         save_history(&new_history)?;
         // 绿色提示
-        println!("\x1b[32m历史记录已保存，下一轮对话自动继续上一次的对话。\x1b[0m");
+        println!("\x1b[32m历史记录已保存，使用 continue 自动继续上一次的对话。\x1b[0m");
     } else {
         // 黄色提示
         println!("\x1b[33m无记忆模式下，不保存历史记录。\x1b[0m");
