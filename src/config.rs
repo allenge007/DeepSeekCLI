@@ -11,7 +11,9 @@ pub struct Config {
 }
 
 pub fn read_config() -> Option<Config> {
-    let home = env::var("HOME").ok()?;
+    let home = env::var("HOME")
+        .or_else(|_| env::var("USERPROFILE"))
+        .ok()?;
     let config_path = PathBuf::from(home)
         .join(".config")
         .join("deepseek")
@@ -27,7 +29,9 @@ pub fn read_config() -> Option<Config> {
 }
 
 pub fn set_config(api_key: &str) -> Result<(), Box<dyn Error>> {
-    let home = env::var("HOME").unwrap_or_else(|_| ".".to_string());
+    let home = env::var("HOME")
+        .or_else(|_| env::var("USERPROFILE"))
+        .unwrap_or_else(|_| ".".to_string());
     let config_path = PathBuf::from(home)
         .join(".config")
         .join("deepseek")
