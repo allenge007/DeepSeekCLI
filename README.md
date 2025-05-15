@@ -1,6 +1,6 @@
-中文 / English
-
 # DeepSeek CLI
+
+For English, see [README.en.md](README.en.md)
 
 DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮对话，并支持对话历史记录的管理。~~是对jyy老师的拙劣模仿。~~
 
@@ -8,8 +8,8 @@ DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮�
 
 ## 特性
 
-- **无记忆模式**：直接输入对话，程序仅使用当前输入向 API 提问，不加载或保存历史记录。
-- **记忆模式**：使用 `--memory` 参数启用，支持以下子命令：
+- **无记忆模式**：直接输入对话或使用命令 `nomemory` 启用，程序仅使用当前输入向 API 提问，不加载或保存历史记录。
+- **记忆模式**：使用命令 `new` 或 `continue` 时会启用：
   - `new`：启动一个新的会话。
   - `continue`：继续上一次（最近一次的记忆模式）对话。
   - 你可以在 `~/.config/deepseek/histories/` 中找到你的对话历史记录（仅限记忆模式下）。
@@ -102,24 +102,28 @@ ag set_api your_api_key
 ag "这是一条无记忆对话"
 ```
 
+或通过 `nomemory` 命令启用无记忆模式：
+
+```sh
+ag nomemory "这是一条无记忆对话"
+```
+
 ### 记忆模式
 
-通过 `-m` 或 `--memory` 参数启用记忆模式。
+通过 `new` 或 `continue` 命令启用记忆模式。
 
 - **新对话**（清空历史记录）:
 
   ```sh
-  ag -m new "这是我们的第一次对话吗"
+  ag new "这是我们的第一次对话吗"
   ```
 
 - **继续对话**:
   
-  指定 `continue` 子命令或直接使用 `-m` 参数后输入对话内容：
+  使用 `continue` 命令输入对话内容：
 
   ```sh
-  ag -m continue "继续我们的对话"
-  # 或者
-  ag -m "继续我们的对话"
+  ag continue "继续我们的对话"
   ```
 
 程序会自动管理对话历史记录，并在记忆模式下显示相应的提示信息（绿色表示成功保存，黄色表示不保存历史记录）。
@@ -134,6 +138,7 @@ Usage: ag [OPTIONS] [query] [COMMAND]
 Commands:
   new       新对话
   continue  继续上一次对话
+  nomemory  无记忆模式
   set_api   设置 API Key
   help      Print this message or the help of the given subcommand(s)
 
@@ -143,7 +148,6 @@ Arguments:
 Options:
   -v, --version <version>          模型版本, r1 表示 deepseek-reasoner [default: v3]
   -t, --temperature <temperature>  温度（默认：1.0，范围：0.0-2.0，越高越随机） [default: 1.0]
-  -m, --memory                     记忆模式：启用后每次调用 API 时保存历史记录
   -h, --help                       Print help
   -V, --version                    Print version
 ```
@@ -155,10 +159,10 @@ Options:
 ag "你好，DeepSeek！"
 
 # 开启记忆模式新对话：
-ag -m new "你好，这是我们的第一次对话吗？"
+ag new "你好，这是我们的第一次对话吗？"
 
 # 开启记忆模式继续对话：
-ag -m "请继续刚才的话题。"
+ag "请继续刚才的话题。"
 ```
 
 ## 开发
@@ -178,185 +182,3 @@ ag -m "请继续刚才的话题。"
 ## 联系方式
 
 如有疑问或建议，请联系项目负责人或通过 issue 反馈。
-
-# DeepSeek CLI  
-
-DeepSeek CLI is a command-line tool that enables multi-turn conversations by calling the DeepSeek API and supports managing conversation history. ~~A clumsy imitation of Prof. Jyy's work.~~  
-
-You can initiate or continue conversations in memory mode or use memoryless mode for single-turn interactions.  
-
-## Features  
-
-- **Memoryless Mode**: Directly input the conversation, and the program will only use the current input to query the API, without loading or saving any historical records.  
-- **Memory Mode**: Enable with the `--memory` parameter, supporting the following subcommands:  
-  - `new`: Start a new session.  
-  - `continue`: Resume the last (most recent memory mode) conversation.  
-  - You can find your conversation history (only in memory mode) at `~/.config/deepseek/histories/`.
-- ANSI-colored prompts for quick identification of success/error messages.  
-- Conversation history is saved in timestamp-based files for easy management.  
-- Supports data transmission via pipes.  
-
-## Installation  
-
-1. Clone the repository:  
-
-   ```sh  
-   git clone <repository_url>  
-   cd deepseek_cli  
-   ```  
-
-2. Ensure [Rust](https://www.rust-lang.org/tools/install) is installed.  
-
-3. Build the project:  
-
-   ```sh  
-   cargo build --release  
-   ```  
-
-4. The executable will be generated at `target/release/deepseek_cli`.  
-
-## Configuration  
-
-Below are steps for macOS, Linux, and Windows to add the executable to your PATH for global access:  
-
-<details>  
-  <summary><strong>macOS</strong></summary>  
-
-  Run the following command (admin privileges required) to symlink the executable to `/usr/local/bin` (usually in PATH):  
-
-  ```bash  
-  sudo ln -s $(pwd)/target/release/deepseek_cli /usr/local/bin/ag  
-  ```  
-</details>  
-
-<details>  
-  <summary><strong>Linux</strong></summary>  
-
-  Symlink:  
-
-  ```bash  
-  sudo ln -s $(pwd)/target/release/deepseek_cli /usr/local/bin/ag  
-  ```  
-
-  Or copy the file:  
-
-  ```bash  
-  sudo cp $(pwd)/target/release/deepseek_cli /usr/local/bin/ag  
-  ```  
-</details>  
-
-<details>  
-  <summary><strong>Windows</strong></summary>  
-
-  Run in an elevated Command Prompt or PowerShell:  
-
-  ```cmd  
-  copy target\release\deepseek_cli.exe C:\Windows\System32\ag.exe  
-  ```  
-</details>  
-
-Ensure you have sufficient permissions for the target directory. After setup, use the `ag` command globally.  
-
-Create a configuration file `config.toml` in `~/.config/deepseek/` and ensure it includes your DeepSeek API key, for example:  
-
-```toml
-api_key = "your_api_key_here"
-```  
-
-Alternatively, you can directly use the command:  
-
-```sh
-ag set_api your_api_key
-```  
-
-This will generate the configuration file, with the default path being `~/.config/deepseek/config.toml`.
-
-## Usage  
-
-### Memoryless Mode  
-
-Directly input your query:  
-
-```sh  
-ag "This is a memoryless query"  
-```  
-
-### Memory Mode  
-
-Enable with `-m` or `--memory`.  
-
-- **New Conversation** (clears history):  
-
-  ```sh  
-  ag -m new "Is this our first conversation?"  
-  ```  
-
-- **Continue Conversation**:  
-
-  Use the `continue` subcommand or omit it after `-m`:  
-
-  ```sh  
-  ag -m continue "Let’s resume our talk."  
-  # Or  
-  ag -m "Let’s resume our talk."  
-  ```  
-
-The program auto-manages history, with colored prompts indicating success (green) or disabled history (yellow).  
-
-### More Arguments
-
-```sh
-Using the DeepSeek API for multi-turn conversations and managing conversation history  
-
-Usage: ag [OPTIONS] [query] [COMMAND]  
-
-Commands:  
-  new       Start a new conversation  
-  continue  Continue the previous conversation  
-  set_api   Set API Key  
-  help      Print this message or the help of the given subcommand(s)  
-
-Arguments:  
-  [query]  Query content  
-
-Options:  
-  -v, --version <version>          Model version, r1 represents deepseek-reasoner [default: v3]  
-  -t, --temperature <temperature>  Temperature (default: 1.0, range: 0.0-2.0, higher values increase randomness) [default: 1.0]  
-  -m, --memory                    Memory mode: When enabled, saves conversation history with each API call  
-  -h, --help                      Print help  
-  -V, --version                   Print version
-```
-
-## Examples  
-
-```sh  
-# Memoryless mode:  
-ag "Hello, DeepSeek!"  
-
-# New memory-mode conversation:  
-ag -m new "Is this our first chat?"  
-
-# Continue in memory mode:  
-ag -m "Continue the previous topic."  
-```  
-
-## Development  
-
-Built with:  
-- [Tokio](https://docs.rs/tokio) for async tasks.  
-- [Clap](https://docs.rs/clap) for CLI parsing.  
-- [Reqwest](https://docs.rs/reqwest) for API calls.  
-
-Key files:  
-- `src/main.rs` – Core logic & argument parsing.  
-- `src/history.rs` – History management.  
-- `src/config.rs` – Configuration handling.  
-- `src/models.rs` – Request/response structures.  
-
-## License  
-
-MIT License. See [LICENSE](LICENSE).  
-
-## Contact  
-
-For questions or feedback, open an issue or contact the maintainer.
