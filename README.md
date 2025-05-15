@@ -134,7 +134,7 @@ Arguments:
 
 Options:
   -v, --version <version>          模型版本, r1 表示 deepseek-reasoner [default: v3]
-  -t, --temperature <temperature>  温度（默认：1） [default: 1]
+  -t, --temperature <temperature>  温度（默认：1.0，范围：0.0-2.0，越高越随机） [default: 1.0]
   -m, --memory                     记忆模式：启用后每次调用 API 时保存历史记录
   -h, --help                       Print help
   -V, --version                    Print version
@@ -303,8 +303,8 @@ Arguments:
 
 Options:  
   -v, --version <version>          Model version, r1 represents deepseek-reasoner [default: v3]  
-  -t, --temperature <temperature>  Temperature (default: 1) [default: 1]  
-  -m, --memory                     Memory mode: Saves history when enabled for each API call  
+  -t, --temperature <temperature>  Temperature (default: 1.0, range: 0.0-2.0, higher values increase randomness) [default: 1.0]  
+  -m, --memory                     Memory mode: When enabled, saves conversation history with each API call  
   -h, --help                       Print help  
   -V, --version                    Print version
 ```

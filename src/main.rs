@@ -47,8 +47,8 @@ fn parse_args() -> CliArgs {
             Arg::new("temperature")
                 .short('t')
                 .long("temperature")
-                .default_value("1")
-                .help("温度（默认：1）"),
+                .default_value("1.0")
+                .help("温度（默认：1.0，范围：0.0-2.0，越高越随机）"),
         )
         // 使用 --memory 表示记忆模式，否则为无记忆模式
         .arg(
