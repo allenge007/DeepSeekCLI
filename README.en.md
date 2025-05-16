@@ -1,3 +1,4 @@
+
 # DeepSeek CLI  
 
 For Chinese, see [README.md](README.md)  
@@ -8,10 +9,10 @@ You can start or continue conversations in memory mode or use memoryless mode fo
 
 ## Features  
 
-- **Memoryless Mode**: Directly input your query or use the `nomemory` command to enable this mode. The program only sends the current input to the API without loading or saving history.  
+- **Memoryless Mode**: Enter a query directly or use the `nomemory` command to enable. The program only sends the current input to the API without loading or saving history.  
 - **Memory Mode**: Activated using the `new` or `continue` commands:  
   - `new`: Starts a new conversation.  
-  - `continue`: Resumes the most recent conversation from memory mode.  
+  - `continue`: Resumes the last conversation (the most recent one in memory mode).  
   - Conversation history (only in memory mode) is stored in `~/.config/deepseek/histories/`.  
 - ANSI color-coded prompts for quick identification of success/error messages.  
 - Conversation history is saved in timestamp-based files for easier management.  
@@ -26,7 +27,7 @@ You can start or continue conversations in memory mode or use memoryless mode fo
    cd deepseek_cli  
    ```  
 
-2. Ensure you have [Rust](https://www.rust-lang.org/tools/install) installed.  
+2. Ensure [Rust](https://www.rust-lang.org/tools/install) is installed.  
 
 3. Build the project:  
 
@@ -36,9 +37,11 @@ You can start or continue conversations in memory mode or use memoryless mode fo
 
 4. The executable will be generated in `target/release/deepseek_cli`.  
 
+5. Alternatively, you can download a pre-built executable for your system from the `release` section.  
+
 ## Configuration  
 
-Below are example steps for macOS, Linux, and Windows to add the executable to your PATH for global access:  
+Below are example steps for macOS, Linux, and Windows to add the executable to your PATH for global access. Ensure the executable is in the current directory before proceeding:  
 
 <details>  
   <summary><strong>macOS</strong></summary>  
@@ -46,7 +49,7 @@ Below are example steps for macOS, Linux, and Windows to add the executable to y
   Run the following command in the terminal (requires admin privileges) to symlink the executable to `/usr/local/bin` (usually already in PATH):  
 
   ```bash  
-  sudo ln -s $(pwd)/target/release/deepseek_cli /usr/local/bin/ag  
+  sudo ln -s $(pwd)/deepseek_cli /usr/local/bin/ag  
   ```  
 </details>  
 
@@ -56,13 +59,13 @@ Below are example steps for macOS, Linux, and Windows to add the executable to y
   Symlink method:  
 
   ```bash  
-  sudo ln -s $(pwd)/target/release/deepseek_cli /usr/local/bin/ag  
+  sudo ln -s $(pwd)/deepseek_cli /usr/local/bin/ag  
   ```  
 
   Or copy the file:  
 
   ```bash  
-  sudo cp $(pwd)/target/release/deepseek_cli /usr/local/bin/ag  
+  sudo cp $(pwd)/deepseek_cli /usr/local/bin/ag  
   ```  
 </details>  
 
@@ -72,11 +75,11 @@ Below are example steps for macOS, Linux, and Windows to add the executable to y
   Run the following in an elevated Command Prompt or PowerShell:  
 
   ```cmd  
-  copy target\release\deepseek_cli.exe C:\Windows\System32\ag.exe  
+  copy deepseek_cli.exe C:\Windows\System32\ag.exe  
   ```  
 </details>  
 
-Ensure you have sufficient permissions to create symlinks or copy files in the target directory. After completing these steps, you can use the `ag` command globally in your terminal.  
+Ensure you have sufficient permissions to create symlinks or copy files in the target directory. After completing these steps, you can use the `ag` command globally in the terminal.  
 
 Create a configuration file `config.toml` in `~/.config/deepseek/` containing your DeepSeek API key, e.g.:  
 
@@ -96,7 +99,7 @@ This will generate the configuration file at `~/.config/deepseek/config.toml` by
 
 ### Memoryless Mode  
 
-Directly input your query:  
+Call the command directly with your query:  
 
 ```sh  
 ag "This is a memoryless query"  
@@ -110,7 +113,7 @@ ag nomemory "This is a memoryless query"
 
 ### Memory Mode  
 
-Enable memory mode using the `new` or `continue` commands.  
+Enable memory mode with the `new` or `continue` commands.  
 
 - **New Conversation** (clears history):  
 
@@ -120,10 +123,10 @@ Enable memory mode using the `new` or `continue` commands.
 
 - **Continue Conversation**:  
 
-  Use the `continue` command to resume:  
+  Use the `continue` command with your query:  
 
   ```sh  
-  ag continue "Let's continue our conversation."  
+  ag continue "Let's continue our discussion."  
   ```  
 
 The program automatically manages conversation history and displays prompts in memory mode (green for successful saves, yellow for no history retention).  
@@ -137,7 +140,7 @@ Usage: ag [OPTIONS] [query] [COMMAND]
 
 Commands:  
   new       Start a new conversation  
-  continue  Continue the last conversation  
+  continue  Resume the last conversation  
   nomemory  Memoryless mode  
   set_api   Set API Key  
   help      Print this message or the help of the given subcommand(s)  

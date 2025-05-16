@@ -36,9 +36,11 @@ DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮�
 
 4. 可执行文件将在 `target/release/deepseek_cli` 中生成。
 
+5. 或者您可以直接从 `release` 中下载适合您系统的可执行文件。
+
 ## 配置
 
-下面是针对 macOS、Linux 和 Windows 系统的示例步骤，帮助你将生成的可执行文件放入 PATH 中，从而实现全局调用：
+下面是针对 macOS、Linux 和 Windows 系统的示例步骤，帮助你将生成的可执行文件放入 PATH 中，从而实现全局调用，在操作前，请确认**可执行文件正处在当前目录**下：
 
 <details>
   <summary><strong>macOS</strong></summary>
@@ -46,7 +48,7 @@ DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮�
   在终端中执行以下命令（需要管理员权限），将可执行文件链接到 `/usr/local/bin` 目录（通常已在 PATH 中）：
 
   ```bash
-  sudo ln -s $(pwd)/target/release/deepseek_cli /usr/local/bin/ag
+  sudo ln -s $(pwd)/deepseek_cli /usr/local/bin/ag
   ```
 </details>
 
@@ -56,13 +58,13 @@ DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮�
   使用链接方式：
   
   ```bash
-  sudo ln -s $(pwd)/target/release/deepseek_cli /usr/local/bin/ag
+  sudo ln -s $(pwd)/deepseek_cli /usr/local/bin/ag
   ```
 
   或复制文件：
   
   ```bash
-  sudo cp $(pwd)/target/release/deepseek_cli /usr/local/bin/ag
+  sudo cp $(pwd)/deepseek_cli /usr/local/bin/ag
   ```
 </details>
 
@@ -72,7 +74,7 @@ DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮�
   在管理员权限下的命令提示符或 PowerShell 中执行：
   
   ```cmd
-  copy target\release\deepseek_cli.exe C:\Windows\System32\ag.exe
+  copy deepseek_cli.exe C:\Windows\System32\ag.exe
   ```
 </details>
 
