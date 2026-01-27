@@ -7,8 +7,8 @@ use clap::{Arg, Command, Subcommand};
 use futures::StreamExt;
 use reqwest::Client;
 use std::io::{self, Write};
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 use tokio::time::{sleep, Duration};
 
 use config::{read_config, set_config, Config};
@@ -31,12 +31,11 @@ struct CliArgs {
     query: String,
     model: String,
     temperature: f32,
-    no_memory: bool,   // true 表示无记忆模式
+    no_memory: bool, // true 表示无记忆模式
 }
 
 fn parse_args() -> CliArgs {
     let matches = Command::new("ag")
-        .version("1.0")
         .about("使用 DeepSeek API 进行多轮对话，并管理对话历史")
         .arg(Arg::new("query").help("查询内容").index(1))
         .arg(
@@ -71,8 +70,8 @@ fn parse_args() -> CliArgs {
         )
         .subcommand(
             Command::new("set_api")
-            .about("设置 API Key")
-            .arg(Arg::new("api_key").help("要设置的 API Key").index(1))
+                .about("设置 API Key")
+                .arg(Arg::new("api_key").help("要设置的 API Key").index(1)),
         )
         .get_matches();
 
@@ -96,7 +95,7 @@ fn parse_args() -> CliArgs {
             no_memory: false,
         };
     }
-    
+
     let mem_action = if let Some(_) = matches.subcommand_matches("new") {
         Some(MemoryAction::New)
     } else if let Some(_) = matches.subcommand_matches("continue") {
@@ -109,20 +108,29 @@ fn parse_args() -> CliArgs {
 
     // 获取查询内容：如果子命令中存在 query，则优先使用；否则使用全局参数
     let query = if let Some(sub_m) = matches.subcommand_matches("new") {
-        sub_m.get_one::<String>("query").unwrap_or_else(|| {
-            eprintln!("请提供查询内容");
-            std::process::exit(1);
-        }).to_string()
+        sub_m
+            .get_one::<String>("query")
+            .unwrap_or_else(|| {
+                eprintln!("请提供查询内容");
+                std::process::exit(1);
+            })
+            .to_string()
     } else if let Some(sub_m) = matches.subcommand_matches("continue") {
-        sub_m.get_one::<String>("query").unwrap_or_else(|| {
-            eprintln!("请提供查询内容");
-            std::process::exit(1);
-        }).to_string()
+        sub_m
+            .get_one::<String>("query")
+            .unwrap_or_else(|| {
+                eprintln!("请提供查询内容");
+                std::process::exit(1);
+            })
+            .to_string()
     } else if let Some(sub_m) = matches.subcommand_matches("nomemory") {
-        sub_m.get_one::<String>("query").unwrap_or_else(|| {
-            eprintln!("请提供查询内容");
-            std::process::exit(1);
-        }).to_string()
+        sub_m
+            .get_one::<String>("query")
+            .unwrap_or_else(|| {
+                eprintln!("请提供查询内容");
+                std::process::exit(1);
+            })
+            .to_string()
     } else if let Some(q) = matches.get_one::<String>("query") {
         q.to_string()
     } else {
@@ -167,7 +175,11 @@ fn start_spinner(model: &str) -> (Option<Arc<AtomicBool>>, Option<tokio::task::J
             let spinner_chars = vec!["|", "/", "-", "\\"];
             let mut idx = 0;
             while sr_clone.load(Ordering::Relaxed) {
-                eprint!("\r{}🤖: {}", model, spinner_chars[idx % spinner_chars.len()]);
+                eprint!(
+                    "\r{}🤖: {}",
+                    model,
+                    spinner_chars[idx % spinner_chars.len()]
+                );
                 io::stderr().flush().unwrap();
                 idx += 1;
                 sleep(Duration::from_millis(100)).await;
@@ -249,13 +261,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 解析主要参数
     let cli = parse_args();
     if let Some(api_key) = cli.set_api {
-        return set_config(&api_key)
-            .map_err(|e| format!("设置 API Key 失败: {}", e).into());
+        return set_config(&api_key).map_err(|e| format!("设置 API Key 失败: {}", e).into());
     }
 
     let currnt_history_path = &current_history_path();
 
-        // 读取管道传输的内容（如果有）
+    // 读取管道传输的内容（如果有）
     let mut piped_input = String::new();
     if !atty::is(Stream::Stdin) {
         // 从标准输入读取管道内容
@@ -293,7 +304,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         frequency_penalty: 0,
         max_tokens: 2048,
         presence_penalty: 0,
-        response_format: ResponseFormat { typ: "text".to_string() },
+        response_format: ResponseFormat {
+            typ: "text".to_string(),
+        },
         stop: None,
         stream: true,
         stream_options: Some(serde_json::json!({ "include_usage": true })),
@@ -305,8 +318,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         top_logprobs: None,
     };
 
-    let cfg: Config = read_config()
-        .expect("请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key");
+    let cfg: Config = read_config().expect(
+        "请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key",
+    );
     let api_key = cfg.api_key;
     let baseurl = "https://api.deepseek.com/chat/completions";
     let client = Client::new();
@@ -329,7 +343,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         response.bytes_stream(),
         spinner_running,
         spinner_handle,
-    ).await?;
+    )
+    .await?;
 
     println!();
 
@@ -354,3 +369,4 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+
