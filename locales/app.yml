@@ -1,0 +1,65 @@
+'API 返回错误:':
+  en: 'API returned error: '
+  zh-CN: 'API 返回错误: '
+'\x1b[32m历史记录已保存，使用 continue 自动继续上一次的对话。\x1b[0m':
+  en: '\x1b[32mHistory saved. Use "continue" to resume last conversation.\x1b[0m'
+  zh-CN: '\x1b[32m历史记录已保存，使用 continue 自动继续上一次的对话。\x1b[0m'
+'\x1b[33m无记忆模式下，不保存历史记录。\x1b[0m':
+  en: '\x1b[33mDuring memoryless mode, chat history would not be save.'
+  zh-CN: '\x1b[33m无记忆模式下，不保存历史记录。\x1b[0m'
+_version: 2
+'使用 DeepSeek API 进行多轮对话，并管理对话历史':
+  en: 'Use DeepSeek API for multi-turn conversations with history management'
+  zh-CN: '使用 DeepSeek API 进行多轮对话，并管理对话历史'
+'创建历史文件失败:':
+  en: 'Failed to create history file: '
+  zh-CN: '创建历史文件失败: '
+'创建配置目录失败:':
+  en: 'Failed to create config directory: '
+  zh-CN: '创建配置目录失败: '
+'新对话':
+  en: 'New conversation'
+  zh-CN: '新对话'
+'无记忆模式':
+  en: 'Memoryless mode'
+  zh-CN: '无记忆模式'
+'查询内容':
+  en: 'Query content'
+  zh-CN: '查询内容'
+'模型版本, r1 表示 deepseek-reasoner':
+  en: 'Model version (r1 for deepseek-reasoner)'
+  zh-CN: '模型版本, r1 表示 deepseek-reasoner'
+'温度（默认：1.0，范围：0.0-2.0，越高越随机）':
+  en: 'Temperature (default 1.0, range 0.0-2.0, higher = more random)'
+  zh-CN: '0，越高越随机）'
+'继续上一次对话':
+  en: 'Resume last conversation'
+  zh-CN: '继续上一次对话'
+'要设置的 API Key':
+  en: 'API Key to set'
+  zh-CN: '要设置的 API Key'
+'设置 API Key':
+  en: 'Set API Key'
+  zh-CN: '设置 API Key'
+'设置 API Key 失败:':
+  en: 'Failed to set API Key: '
+  zh-CN: '设置 API Key 失败: '
+'请提供查询内容':
+  en: 'Please provide query content'
+  zh-CN: '请提供查询内容'
+'请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key':
+  en: 'Check config format at ~/.config/deepseek/config.toml or reset API Key with set_api'
+  zh-CN: 'toml 格式，或使用 set_api 重新设置 API Key'
+'请输入 API Key:':
+  en: 'Enter API Key:'
+  zh-CN: '请输入 API Key：'
+'读取输入失败':
+  en: 'Input read failed'
+  zh-CN: '读取输入失败'
+'配置文件已更新:':
+  en: 'Config file updated: '
+  zh-CN: '配置文件已更新: '
+'加载中':
+  en: 'Loading'
+  zh-CN: '加载中'
+  

@@ -2,6 +2,11 @@ mod config;
 mod history;
 mod models;
 
+//初始化i18n库
+#[macro_use]
+extern crate rust_i18n;
+i18n!("locales");
+
 use atty::Stream;
 use clap::{Arg, Command, Subcommand};
 use futures::StreamExt;
@@ -35,43 +40,44 @@ struct CliArgs {
 }
 
 fn parse_args() -> CliArgs {
+    use rust_i18n::t;
     let matches = Command::new("ag")
-        .about("使用 DeepSeek API 进行多轮对话，并管理对话历史")
-        .arg(Arg::new("query").help("查询内容").index(1))
+        .about(t!("使用 DeepSeek API 进行多轮对话，并管理对话历史"))
+        .arg(Arg::new("query").help(t!("查询内容")).index(1))
         .arg(
             Arg::new("version")
                 .short('v')
                 .long("version")
                 .default_value("v3")
-                .help("模型版本, r1 表示 deepseek-reasoner"),
+                .help(t!("模型版本, r1 表示 deepseek-reasoner")),
         )
         .arg(
             Arg::new("temperature")
                 .short('t')
                 .long("temperature")
                 .default_value("1.0")
-                .help("温度（默认：1.0，范围：0.0-2.0，越高越随机）"),
+                .help(t!("温度（默认：1.0，范围：0.0-2.0，越高越随机）")),
         )
         // 当开启记忆模式时，仅允许 new 或 continue 子命令
         .subcommand(
             Command::new("new")
-                .about("新对话")
-                .arg(Arg::new("query").help("查询内容").index(1)),
+                .about(t!("新对话"))
+                .arg(Arg::new("query").help(t!("查询内容")).index(1)),
         )
         .subcommand(
             Command::new("continue")
-                .about("继续上一次对话")
-                .arg(Arg::new("query").help("查询内容").index(1)),
+                .about(t!("继续上一次对话"))
+                .arg(Arg::new("query").help(t!("查询内容")).index(1)),
         )
         .subcommand(
             Command::new("nomemory")
-                .about("无记忆模式")
-                .arg(Arg::new("query").help("查询内容").index(1)),
+                .about(t!("无记忆模式"))
+                .arg(Arg::new("query").help(t!("查询内容")).index(1)),
         )
         .subcommand(
             Command::new("set_api")
-                .about("设置 API Key")
-                .arg(Arg::new("api_key").help("要设置的 API Key").index(1)),
+                .about(t!("设置 API Key"))
+                .arg(Arg::new("api_key").help(t!("要设置的 API Key")).index(1)),
         )
         .get_matches();
 
@@ -79,10 +85,12 @@ fn parse_args() -> CliArgs {
         let api_key = if let Some(key) = sub_m.get_one::<String>("api_key") {
             key.to_string()
         } else {
-            print!("请输入 API Key：");
+            print!("{}", t!("请输入 API Key:"));
             io::stdout().flush().unwrap();
             let mut key = String::new();
-            io::stdin().read_line(&mut key).expect("读取输入失败");
+            io::stdin()
+                .read_line(&mut key)
+                .expect(t!("读取输入失败").as_ref());
             key.trim().to_string()
         };
 
@@ -111,7 +119,7 @@ fn parse_args() -> CliArgs {
         sub_m
             .get_one::<String>("query")
             .unwrap_or_else(|| {
-                eprintln!("请提供查询内容");
+                eprintln!("{}", t!("请提供查询内容"));
                 std::process::exit(1);
             })
             .to_string()
@@ -119,7 +127,7 @@ fn parse_args() -> CliArgs {
         sub_m
             .get_one::<String>("query")
             .unwrap_or_else(|| {
-                eprintln!("请提供查询内容");
+                eprintln!("{}", t!("请提供查询内容"));
                 std::process::exit(1);
             })
             .to_string()
@@ -127,14 +135,14 @@ fn parse_args() -> CliArgs {
         sub_m
             .get_one::<String>("query")
             .unwrap_or_else(|| {
-                eprintln!("请提供查询内容");
+                eprintln!("{}", t!("请提供查询内容"));
                 std::process::exit(1);
             })
             .to_string()
     } else if let Some(q) = matches.get_one::<String>("query") {
         q.to_string()
     } else {
-        eprintln!("请提供查询内容");
+        eprintln!("{}", t!("请提供查询内容"));
         std::process::exit(1);
     };
 
@@ -176,8 +184,9 @@ fn start_spinner(model: &str) -> (Option<Arc<AtomicBool>>, Option<tokio::task::J
             let mut idx = 0;
             while sr_clone.load(Ordering::Relaxed) {
                 eprint!(
-                    "\r{}🤖: {}",
+                    "\r{}{}: {}",
                     model,
+                    t!("加载中"),
                     spinner_chars[idx % spinner_chars.len()]
                 );
                 io::stderr().flush().unwrap();
@@ -221,7 +230,7 @@ async fn process_stream(
                     if let Some(handle) = spinner_handle.take() {
                         handle.await?;
                     }
-                    print!("\r{}🤖:\n", model);
+                    print!("\r{}{}:\n", model, t!("加载中"));
                 }
                 if let Ok(chunk_obj) = serde_json::from_str::<StreamingChunk>(data) {
                     if let Some(choice) = chunk_obj.choices.get(0) {
@@ -261,7 +270,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 解析主要参数
     let cli = parse_args();
     if let Some(api_key) = cli.set_api {
-        return set_config(&api_key).map_err(|e| format!("设置 API Key 失败: {}", e).into());
+        return set_config(&api_key)
+            .map_err(|e| format!("{},{}", t!("设置 API Key 失败: ").as_ref(), e).into());
     }
 
     let currnt_history_path = &current_history_path();
@@ -319,7 +329,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     let cfg: Config = read_config().expect(
-        "请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key",
+        t!("请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key")
+            .as_ref(),
     );
     let api_key = cfg.api_key;
     let baseurl = "https://api.deepseek.com/chat/completions";
@@ -333,7 +344,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     if !response.status().is_success() {
         let err_text = response.text().await?;
-        eprintln!("\x1b[31mAPI 返回错误: {}\x1b[0m", err_text);
+        eprintln!("\x1b[31m{}{}\x1b[0m", t!("API 返回错误: "), err_text);
         std::process::exit(1);
     }
 
@@ -361,12 +372,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         save_history(&new_history)?;
         // 绿色提示
-        println!("\x1b[32m历史记录已保存，使用 continue 自动继续上一次的对话。\x1b[0m");
+        println!(
+            "{}",
+            t!("\x1b[32m历史记录已保存，使用 continue 自动继续上一次的对话。\x1b[0m")
+        );
     } else {
         // 黄色提示
-        println!("\x1b[33m无记忆模式下，不保存历史记录。\x1b[0m");
+        println!("{}", t!("\x1b[33m无记忆模式下，不保存历史记录。\x1b[0m"));
     }
 
     Ok(())
 }
-

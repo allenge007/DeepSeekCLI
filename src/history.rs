@@ -49,7 +49,7 @@ pub fn current_history_path() -> PathBuf {
 pub fn load_history(path: &Path) -> Vec<ChatMessage> {
     if !path.exists() {
         if let Err(e) = save_history_to_path(&path, &Vec::<ChatMessage>::new()) {
-            eprintln!("创建历史文件失败: {}", e);
+            eprintln!("{}{}", t!("创建历史文件失败: "), e);
         }
         return Vec::new();
     }
