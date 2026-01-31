@@ -16,7 +16,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use tokio::time::{sleep, Duration};
 
-use config::{read_config, set_config, Config};
+use config::{read_config, set_config, set_prompt, Config};
 use history::*;
 use models::{ChatMessage, ChatPayload, ResponseFormat, StreamingChunk};
 
@@ -32,6 +32,7 @@ enum MemoryAction {
 
 struct CliArgs {
     set_api: Option<String>,
+    set_prompt: Option<String>,
     mem_action: Option<MemoryAction>,
     query: String,
     model: String,
@@ -79,6 +80,11 @@ fn parse_args() -> CliArgs {
                 .about(t!("设置 API Key"))
                 .arg(Arg::new("api_key").help(t!("要设置的 API Key")).index(1)),
         )
+        .subcommand(
+            Command::new("set_prompt")
+                .about(t!("设置 System Prompt"))
+                .arg(Arg::new("prompt").help(t!("要设置的 System Prompt")).index(1)),
+        )
         .get_matches();
 
     if let Some(sub_m) = matches.subcommand_matches("set_api") {
@@ -96,6 +102,31 @@ fn parse_args() -> CliArgs {
 
         return CliArgs {
             set_api: Some(api_key),
+            set_prompt: None,
+            mem_action: None,
+            query: "".to_string(),
+            model: "".to_string(),
+            temperature: 0.0,
+            no_memory: false,
+        };
+    }
+
+    if let Some(sub_m) = matches.subcommand_matches("set_prompt") {
+        let prompt = if let Some(p) = sub_m.get_one::<String>("prompt") {
+            p.to_string()
+        } else {
+            print!("{}", t!("请输入 System Prompt:"));
+            io::stdout().flush().unwrap();
+            let mut p = String::new();
+            io::stdin()
+                .read_line(&mut p)
+                .expect(t!("读取输入失败").as_ref());
+            p.trim().to_string()
+        };
+
+        return CliArgs {
+            set_api: None,
+            set_prompt: Some(prompt),
             mem_action: None,
             query: "".to_string(),
             model: "".to_string(),
@@ -165,6 +196,7 @@ fn parse_args() -> CliArgs {
 
     CliArgs {
         set_api: None,
+        set_prompt: None,
         mem_action,
         query,
         model,
@@ -274,6 +306,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .map_err(|e| format!("{},{}", t!("设置 API Key 失败: ").as_ref(), e).into());
     }
 
+    if let Some(prompt) = cli.set_prompt {
+        return set_prompt(&prompt)
+            .map_err(|e| format!("{},{}", t!("设置 System Prompt 失败: ").as_ref(), e).into());
+    }
+
+    let cfg: Config = read_config().expect(
+        t!("请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key")
+            .as_ref(),
+    );
+
     let currnt_history_path = &current_history_path();
 
     // 读取管道传输的内容（如果有）
@@ -299,6 +341,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // 默认使用 continue 模式加载当前历史记录
         load_history(&currnt_history_path)
     };
+
+    // 如果没有历史记录且配置了默认 Prompt，则添加 System Prompt
+    if history_messages.is_empty() {
+        if let Some(prompt) = &cfg.default_prompt {
+            if !prompt.is_empty() {
+                history_messages.push(ChatMessage {
+                    role: "system".to_string(),
+                    content: prompt.clone(),
+                    reasoning_content: None,
+                    tool_calls: None,
+                });
+            }
+        }
+    }
 
     // 将用户提问加入对话历史
     history_messages.push(ChatMessage {
@@ -328,10 +384,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         top_logprobs: None,
     };
 
-    let cfg: Config = read_config().expect(
-        t!("请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key")
-            .as_ref(),
-    );
     let api_key = cfg.api_key;
     let baseurl = "https://api.deepseek.com/chat/completions";
     let client = Client::new();

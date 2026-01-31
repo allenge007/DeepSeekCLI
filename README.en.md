@@ -14,6 +14,8 @@ You can start or continue conversations in memory mode or use memoryless mode fo
   - `new`: Starts a new conversation.  
   - `continue`: Resumes the last conversation (the most recent one in memory mode).  
   - Conversation history (only in memory mode) is stored in `~/.config/deepseek/histories/`.  
+- **Custom System Prompt**: Supports setting a global System Prompt to define AI roles or context for new conversations.
+- **Multilingual Support**: Interface supports English and Chinese, automatically adapting to system locale.
 - ANSI color-coded prompts for quick identification of success/error messages.  
 - Conversation history is saved in timestamp-based files for easier management.  
 - Supports data transmission via pipes.  
@@ -85,6 +87,8 @@ Create a configuration file `config.toml` in `~/.config/deepseek/` containing yo
 
 ```toml  
 api_key = "your_api_key_here"  
+# Optional: Set default System Prompt
+# default_prompt = "You are a helpful assistant"
 ```  
 
 Alternatively, use the command:  
@@ -94,6 +98,12 @@ ag set_api your_api_key
 ```  
 
 This will generate the configuration file at `~/.config/deepseek/config.toml` by default.  
+
+You can also set a default System Prompt (effective for new conversations):
+
+```sh
+ag set_prompt "You are an expert Rust programmer"
+```
 
 ## Usage  
 
@@ -143,6 +153,7 @@ Commands:
   continue  Resume the last conversation  
   nomemory  Memoryless mode  
   set_api   Set API Key  
+  set_prompt Set System Prompt
   help      Print this message or the help of the given subcommand(s)  
 
 Arguments:  

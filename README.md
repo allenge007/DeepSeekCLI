@@ -13,6 +13,8 @@ DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮�
   - `new`：启动一个新的会话。
   - `continue`：继续上一次（最近一次的记忆模式）对话。
   - 你可以在 `~/.config/deepseek/histories/` 中找到你的对话历史记录（仅限记忆模式下）。
+- **自定义 System Prompt**：支持设置全局 System Prompt，为所有新对话预设 AI 角色或上下文。
+- **多语言支持**：界面支持中文和英文，根据系统区域设置自动适配。
 - ANSI 色彩提示，帮助你快速识别成功/错误信息。
 - 对话历史记录以基于时间戳的文件保存，管理历史记录更加方便。
 - 支持通过管道进行数据传输。
@@ -84,6 +86,8 @@ DeepSeek CLI 是一个命令行工具，通过调用 DeepSeek API 实现多轮�
 
 ```toml
 api_key = "your_api_key_here"
+# 可选：设置默认的 System Prompt
+# default_prompt = "You are a helpful assistant"
 ```
 
 或者直接使用命令
@@ -93,6 +97,12 @@ ag set_api your_api_key
 ```
 
 完成配置文件的生成，默认生成路径为 `~/.config/deepseek/config.toml`。
+
+你也可以设置默认的 System Prompt（在新对话开始时生效）：
+
+```sh
+ag set_prompt "你是一个资深的 Rust 专家"
+```
 
 ## 使用方法
 
@@ -142,6 +152,7 @@ Commands:
   continue  继续上一次对话
   nomemory  无记忆模式
   set_api   设置 API Key
+  set_prompt 设置 System Prompt
   help      Print this message or the help of the given subcommand(s)
 
 Arguments:
