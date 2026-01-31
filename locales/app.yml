@@ -31,7 +31,7 @@ _version: 2
   zh-CN: '模型版本, r1 表示 deepseek-reasoner'
 '温度（默认：1.0，范围：0.0-2.0，越高越随机）':
   en: 'Temperature (default 1.0, range 0.0-2.0, higher = more random)'
-  zh-CN: '0，越高越随机）'
+  zh-CN: '温度（默认：1.0，范围：0.0-2.0，越高越随机）'
 '继续上一次对话':
   en: 'Resume last conversation'
   zh-CN: '继续上一次对话'
@@ -49,7 +49,7 @@ _version: 2
   zh-CN: '请提供查询内容'
 '请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key':
   en: 'Check config format at ~/.config/deepseek/config.toml or reset API Key with set_api'
-  zh-CN: 'toml 格式，或使用 set_api 重新设置 API Key'
+  zh-CN: '请检查配置文件 ~/.config/deepseek/config.toml 格式，或使用 set_api 重新设置 API Key'
 '请输入 API Key:':
   en: 'Enter API Key:'
   zh-CN: '请输入 API Key：'
@@ -63,3 +63,18 @@ _version: 2
   en: 'Loading'
   zh-CN: '加载中'
   
+'设置 System Prompt':
+  en: 'Set System Prompt'
+  zh-CN: '设置 System Prompt'
+'要设置的 System Prompt':
+  en: 'System Prompt to set'
+  zh-CN: '要设置的 System Prompt'
+'请输入 System Prompt:':
+  en: 'Please enter System Prompt:'
+  zh-CN: '请输入 System Prompt:'
+'System Prompt 已更新: ':
+  en: 'System Prompt updated: '
+  zh-CN: 'System Prompt 已更新: '
+'设置 System Prompt 失败: ':
+  en: 'Failed to set System Prompt: '
+  zh-CN: '设置 System Prompt 失败: '
